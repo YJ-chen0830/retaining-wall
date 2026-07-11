@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>擋土牆設計 | Retaining Wall Design</title>
+<script src="https://yj-chen0830.github.io/jrh-core/jrh-core.js?v=3" defer></script>
+<style>
+  :root{--navy:#0b1f3a;--navy2:#13284a;--gold:#c9a14a;--gold2:#e0bf6e;--bg:#f5f3ee;--ink:#1c2530;--line:#d8d2c2;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Noto Sans TC","Segoe UI",sans-serif;background:var(--bg);color:var(--ink);}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#f5f3ee;padding:28px 32px;}
+  header h1{margin:0;font-size:22px;}
+  header span{color:var(--gold2);font-size:13px;display:block;margin-top:4px;}
+  main{max-width:1060px;margin:0 auto;padding:28px 20px 60px;}
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:24px;}
+  @media(max-width:820px){.grid{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  .card h2{font-size:14.5px;margin:0 0 18px;color:var(--navy);font-weight:700;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--gold);padding-bottom:10px;}
+  label{display:block;font-size:12px;color:#666;margin:10px 0 4px;font-weight:500;}
+  input,select{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:7px;font-size:13.5px;background:#fafaf8;}
+  input:focus,select:focus{outline:none;border-color:var(--gold);}
+  .sec{font-size:12px;font-weight:700;color:var(--navy);margin:16px 0 6px;border-left:4px solid var(--gold);padding-left:9px;letter-spacing:.04em;text-transform:uppercase;}
+  .note{font-size:11.5px;color:#999;margin-top:12px;line-height:1.75;background:#f9f7f2;border-radius:6px;padding:9px 12px;}
+  button.calc-btn{margin-top:16px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--navy);color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;}
+  button.calc-btn:hover{background:var(--navy2);}
+  button.pro-btn{margin-top:12px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--gold);color:var(--navy);font-size:14.5px;font-weight:700;cursor:pointer;}
+  button.pro-btn:hover{filter:brightness(1.08);}
+  table{width:100%;border-collapse:collapse;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  th{background:var(--navy);color:#f5f3ee;font-weight:600;font-size:12px;padding:9px 10px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  td{padding:9px 10px;font-size:13px;border-bottom:1px solid var(--line);}
+  tr:nth-child(even) td{background:#f9f7f3;}
+  td:last-child{text-align:right;font-weight:700;}
+  .ok{color:#1a7d3a;font-weight:700;}.ng{color:#c0392b;font-weight:700;}
+  details.proc{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:#fafaf8;overflow:hidden;}
+  details.proc summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px;color:var(--navy);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;}
+  details.proc summary::before{content:"▶";font-size:10px;transition:transform .2s;}
+  details[open].proc summary::before{transform:rotate(90deg);}
+  details.proc pre{margin:0;padding:12px 16px 16px;font-family:"Courier New",monospace;font-size:11.5px;line-height:1.9;white-space:pre-wrap;color:#2c3e50;border-top:1px solid var(--line);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .proj-section{background:#fff;border:1px solid var(--gold);border-radius:10px;padding:18px 22px;margin-bottom:20px;}
+  .proj-section h3{margin:0 0 12px;color:var(--navy);font-size:14px;font-weight:700;}
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){.proj-grid{grid-template-columns:1fr;}}
+  .mob-tabs{display:none;}
+  @media screen and (max-width:767px){
+    .mob-tabs{display:flex;background:var(--bg);border-bottom:2px solid var(--line);margin:0 -20px 0;padding:0 20px;}
+    .mob-tab{flex:1;padding:11px 4px;text-align:center;font-size:13.5px;font-weight:700;color:#888;cursor:pointer;background:transparent;border:none;border-bottom:3px solid transparent;}
+    .mob-tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+    .grid{display:block;}
+    .grid>.card{display:none;}
+    .grid>.card.mob-active{display:block;}
+  }
+  @media print{
+    header,.no-print{display:none!important;}
+    body{background:#fff;margin:0;font-size:9pt;line-height:1.5;color:#111;}
+    main{padding:0;max-width:100%!important;}
+    .grid{grid-template-columns:1fr!important;gap:10pt!important;}
+    .card{box-shadow:none!important;border:1px solid #ccc!important;border-radius:4pt!important;padding:10pt 12pt!important;break-inside:avoid;}
+    .card h2{font-size:10.5pt!important;padding-bottom:6pt!important;margin-bottom:9pt!important;}
+    label{font-size:8pt!important;margin:6pt 0 2pt!important;}
+    .sec{font-size:8pt!important;margin:10pt 0 4pt!important;}
+    .note{font-size:7.5pt!important;padding:6pt 9pt!important;}
+    table{border:1px solid #bbb!important;border-radius:0!important;margin-top:6pt!important;}
+    th{font-size:8pt!important;padding:5pt 7pt!important;background:#0b1f3a!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    td{font-size:8.5pt!important;padding:5pt 7pt!important;}
+    tr:nth-child(even) td{background:#f5f5f5!important;}
+    details.proc{display:block!important;margin-top:10pt!important;border:1pt solid #0b1f3a!important;border-radius:4pt!important;break-inside:avoid;background:#f9f9f6!important;}
+    details.proc>summary{display:none!important;}
+    details.proc::before{content:"📋  計算過程（供第三方檢核）";display:block;font-weight:700;font-size:8pt;color:#0b1f3a;padding:6pt 10pt 4pt;border-bottom:1px solid #ccc;letter-spacing:.04em;}
+    details.proc>pre{font-size:7pt!important;line-height:1.65!important;white-space:pre-wrap!important;padding:6pt 10pt 10pt!important;color:#1a1a1a!important;font-family:"Courier New",monospace!important;}
+    .proj-section{border:1.5pt solid #0b1f3a!important;border-radius:4pt!important;}
+    button.pro-btn,button.calc-btn{display:none!important;}
+    @page{margin:15mm 12mm;size:A4;}
+  }
+</style>
+</head>
+<body data-tool="rw">
+<header>
+  <a href="https://yj-chen0830.github.io/engineering-hub/" style="color:var(--gold2);font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:8px;">← 返回工程計算中心</a>
+  <h1>擋土牆設計 (Retaining Wall Design)</h1>
+  <span>懸臂式永久擋土牆 · Rankine 主動土壓 · 傾覆/滑動/承載力三項穩定檢核</span>
+</header>
+<main>
+
+<div class="proj-section no-print" id="projSection">
+  <h3>📁 專案資訊（列印時帶入計算書封面）</h3>
+  <div class="proj-grid">
+    <div><label>工程名稱</label><input id="pj-name" placeholder="○○工程"></div>
+    <div><label>工程地點</label><input id="pj-loc" placeholder="○○市○○區"></div>
+    <div><label>承造廠商</label><input id="pj-contractor" placeholder="○○營造股份有限公司"></div>
+    <div><label>文件編號</label><input id="pj-docno" placeholder="RW-CAL-001"></div>
+    <div><label>計算者</label><input id="pj-calc" placeholder="姓名"></div>
+    <div><label>審核者</label><input id="pj-review" placeholder="姓名"></div>
+    <div><label>計算日期</label><input id="pj-date" type="date"></div>
+  </div>
+</div>
+
+<div class="mob-tabs">
+  <button class="mob-tab active" onclick="switchMobTab('rw-in',this)">📋 輸入參數</button>
+  <button class="mob-tab" id="mobTab-rw-r" onclick="switchMobTab('rw-r',this)">📊 計算結果</button>
+</div>
+<div class="grid">
+  <div class="card mob-active" data-tab="rw-in">
+    <h2>擋土牆幾何（懸臂式，矩形牆身）</h2>
+    <div class="row2">
+      <div><label>牆身高度 Hs (m)</label><input id="rw-Hs" type="number" value="3" step="0.1" min="0.5"></div>
+      <div><label>牆身厚度 ts (mm)</label><input id="rw-ts" type="number" value="300" step="10" min="150"></div>
+    </div>
+    <div class="row2">
+      <div><label>基礎版厚度 tf (mm)</label><input id="rw-tf" type="number" value="400" step="10" min="200"></div>
+      <div><label>基礎版總寬 B (m)</label><input id="rw-B" type="number" value="2.2" step="0.1" min="1"></div>
+    </div>
+    <label>趾板寬度 Bt (m，由趾端至牆面)</label>
+    <input id="rw-Bt" type="number" value="0.7" step="0.1" min="0.1">
+
+    <div class="sec">背填土壤</div>
+    <div class="row2">
+      <div><label>單位重 γ (kN/m³)</label><input id="rw-gamma" type="number" value="18" step="0.5" min="10"></div>
+      <div><label>內摩擦角 φ (°)</label><input id="rw-phi" type="number" value="30" step="1" min="15"></div>
+    </div>
+    <label>地表均布加載 q (kPa，無則填0)</label>
+    <input id="rw-q" type="number" value="0" step="1" min="0">
+
+    <div class="sec">基礎地盤</div>
+    <div class="row2">
+      <div><label>基底摩擦係數 μ</label><input id="rw-mu" type="number" value="0.45" step="0.05" min="0.1" max="0.9"></div>
+      <div><label>容許承載力 qa (kPa)</label><input id="rw-qa" type="number" value="200" step="10" min="50"></div>
+    </div>
+
+    <button class="calc-btn" onclick="calcRW()">計算擋土牆穩定性</button>
+    <div class="note">採 Rankine 主動土壓理論（水平背填、無壁摩擦，φ&gt;0時保守簡化），矩形牆身斷面（未計梯形收分）。傾覆/滑動安全係數要求依常見規範取 FS≥2.0（傾覆）、FS≥1.5（滑動），未計入被動土壓與牆前土重（保守）。僅供初步設計參考，正式設計應由大地及結構工程師複核，並檢討牆身/基礎版本身之結構設計（撓曲、剪力）。</div>
+  </div>
+  <div class="card" data-tab="rw-r">
+    <h2>穩定性檢核結果</h2>
+    <div id="rw-result"><p style="color:#888">尚未計算</p></div>
+    <details class="proc" id="rw-proc" style="display:none">
+      <summary>📋 計算過程（供第三方檢核）</summary>
+      <pre id="rw-proc-text"></pre>
+    </details>
+    <button class="pro-btn no-print" onclick="openPro()">📄 產出計算書 PDF</button>
+  </div>
+</div>
+
+</main>
+<script>
+function switchMobTab(name,btn){
+  btn.parentElement.querySelectorAll('.mob-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  btn.parentElement.nextElementSibling.querySelectorAll('.card').forEach(function(c){
+    c.classList.toggle('mob-active',c.dataset.tab===name);
+  });
+}
+function openPro(){ JRH.checkEmail(function(){ jrhPrint('擋土牆設計計算書'); }); }
+function v(id){return parseFloat(document.getElementById(id).value)||0;}
+function f1(x){return x.toFixed(1);}
+function f2(x){return x.toFixed(2);}
+function f3(x){return x.toFixed(3);}
+function deg2rad(d){return d*Math.PI/180;}
+
+function calcRW(){
+  var Hs=v('rw-Hs'), ts=v('rw-ts'), tf=v('rw-tf'), B=v('rw-B'), Bt=v('rw-Bt');
+  var gamma=v('rw-gamma'), phi=v('rw-phi'), q=v('rw-q');
+  var mu=v('rw-mu'), qa=v('rw-qa');
+
+  var H = Hs + tf/1000; // total wall height for earth pressure (m)
+  var heelW = B - Bt - ts/1000; // heel width (m)
+
+  // active earth pressure (Rankine, level backfill)
+  var Ka = Math.pow(Math.tan(deg2rad(45-phi/2)), 2);
+  var Pa = 0.5*Ka*gamma*H*H; // kN/m, triangular, acts at H/3 from base
+  var Paq = Ka*q*H; // kN/m, uniform surcharge component, acts at H/2 from base
+  var Ph = Pa + Paq;
+  var Mo = Pa*(H/3) + Paq*(H/2); // overturning moment about toe, kN*m/m
+
+  // weights (kN/m) and centroid distance from toe (m)
+  var Wstem = ts/1000*Hs*24;
+  var xStem = Bt + (ts/1000)/2;
+  var Wfooting = B*tf/1000*24;
+  var xFooting = B/2;
+  var Wsoil = heelW*Hs*gamma;
+  var xSoil = Bt + ts/1000 + heelW/2;
+
+  var Wtotal = Wstem + Wfooting + Wsoil;
+  var Mresist = Wstem*xStem + Wfooting*xFooting + Wsoil*xSoil;
+
+  var FSover = Mresist/Mo;
+  var overOK = FSover >= 2.0;
+
+  var Fresist = mu*Wtotal;
+  var FSslide = Fresist/Ph;
+  var slideOK = FSslide >= 1.5;
+
+  var xbar = (Mresist - Mo)/Wtotal;
+  var e = B/2 - xbar;
+  var B6 = B/6;
+  var withinMiddleThird = Math.abs(e) <= B6;
+  var qmax, qmin;
+  if (withinMiddleThird) {
+    qmax = Wtotal/B*(1+6*e/B);
+    qmin = Wtotal/B*(1-6*e/B);
+  } else {
+    qmax = 2*Wtotal/(3*(B/2-e));
+    qmin = 0;
+  }
+  var bearingOK = qmax <= qa;
+
+  var res = document.getElementById('rw-result');
+  res.innerHTML =
+    '<table><tr><th>項目</th><th>數值</th></tr>'+
+    '<tr><td>主動土壓係數 Ka</td><td>'+f3(Ka)+'</td></tr>'+
+    '<tr><td>總水平推力 Ph</td><td>'+f2(Ph)+' kN/m</td></tr>'+
+    '<tr><td>牆體+基礎+背填土總重 ΣW</td><td>'+f2(Wtotal)+' kN/m</td></tr>'+
+    '<tr><td>傾覆安全係數 FSover（需≥2.0）</td><td>'+f2(FSover)+' '+(overOK?'<span class="ok">OK</span>':'<span class="ng">NG</span>')+'</td></tr>'+
+    '<tr><td>滑動安全係數 FSslide（需≥1.5）</td><td>'+f2(FSslide)+' '+(slideOK?'<span class="ok">OK</span>':'<span class="ng">NG</span>')+'</td></tr>'+
+    '<tr><td>偏心距 e（B/6='+f3(B6)+'m）</td><td>'+f3(e)+' m '+(withinMiddleThird?'（在中央三分之一內）':'（超出中央三分之一）')+'</td></tr>'+
+    '<tr><td>基底最大壓力 qmax（需≤qa）</td><td>'+f1(qmax)+' kPa '+(bearingOK?'<span class="ok">OK</span>':'<span class="ng">NG</span>')+'</td></tr>'+
+    '<tr><td>基底最小壓力 qmin</td><td>'+f1(qmin)+' kPa'+(qmin<0?' <span class="ng">（出現拉應力，不合理）</span>':'')+'</td></tr>'+
+    '</table>';
+
+  var p='';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  p+='  擋土牆穩定性計算過程（Rankine 主動土壓法）\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  p+='【輸入】\n';
+  p+='  Hs='+Hs+' m, ts='+ts+' mm, tf='+tf+' mm, B='+B+' m, Bt='+Bt+' m\n';
+  p+='  γ='+gamma+' kN/m³, φ='+phi+'°, q='+q+' kPa, μ='+mu+', qa='+qa+' kPa\n\n';
+  p+='【一】主動土壓力（Rankine，水平背填）\n';
+  p+='  H = Hs + tf/1000 = '+Hs+' + '+(tf/1000)+' = '+f2(H)+' m\n';
+  p+='  Ka = tan²(45−φ/2) = tan²(45−'+(phi/2)+') = '+f3(Ka)+'\n';
+  p+='  Pa = 0.5×Ka×γ×H² = 0.5×'+f3(Ka)+'×'+gamma+'×'+f2(H)+'² = '+f2(Pa)+' kN/m（作用於 H/3='+f2(H/3)+'m 處）\n';
+  if (q>0) p+='  Paq = Ka×q×H = '+f3(Ka)+'×'+q+'×'+f2(H)+' = '+f2(Paq)+' kN/m（作用於 H/2='+f2(H/2)+'m 處）\n';
+  p+='  Ph = Pa + Paq = '+f2(Ph)+' kN/m\n';
+  p+='  Mo（傾覆力矩，對趾端取矩）= '+f2(Pa)+'×'+f2(H/3)+' + '+f2(Paq)+'×'+f2(H/2)+' = '+f2(Mo)+' kN·m/m\n\n';
+  p+='【二】自重與抵抗力矩（對趾端取矩，x=0為趾端）\n';
+  p+='  heel寬 = B−Bt−ts/1000 = '+B+'−'+Bt+'−'+(ts/1000)+' = '+f2(heelW)+' m\n';
+  p+='  W牆身 = ts/1000×Hs×24 = '+(ts/1000)+'×'+Hs+'×24 = '+f2(Wstem)+' kN/m，臂長x='+f3(xStem)+'m\n';
+  p+='  W基礎 = B×tf/1000×24 = '+B+'×'+(tf/1000)+'×24 = '+f2(Wfooting)+' kN/m，臂長x='+f3(xFooting)+'m\n';
+  p+='  W背填土(heel上方) = heel寬×Hs×γ = '+f2(heelW)+'×'+Hs+'×'+gamma+' = '+f2(Wsoil)+' kN/m，臂長x='+f3(xSoil)+'m\n';
+  p+='  ΣW = '+f2(Wstem)+'+'+f2(Wfooting)+'+'+f2(Wsoil)+' = '+f2(Wtotal)+' kN/m\n';
+  p+='  ΣM抵抗 = '+f2(Wstem)+'×'+f3(xStem)+' + '+f2(Wfooting)+'×'+f3(xFooting)+' + '+f2(Wsoil)+'×'+f3(xSoil)+' = '+f2(Mresist)+' kN·m/m\n\n';
+  p+='【三】傾覆檢核\n';
+  p+='  FSover = ΣM抵抗/Mo = '+f2(Mresist)+'/'+f2(Mo)+' = '+f2(FSover)+' '+(overOK?'≥ 2.0 OK':'< 2.0 NG')+'\n\n';
+  p+='【四】滑動檢核\n';
+  p+='  抵抗力 = μ×ΣW = '+mu+'×'+f2(Wtotal)+' = '+f2(Fresist)+' kN/m（保守，未計被動土壓）\n';
+  p+='  FSslide = 抵抗力/Ph = '+f2(Fresist)+'/'+f2(Ph)+' = '+f2(FSslide)+' '+(slideOK?'≥ 1.5 OK':'< 1.5 NG')+'\n\n';
+  p+='【五】基底承載力檢核\n';
+  p+='  合力作用點 x̄ = (ΣM抵抗−Mo)/ΣW = ('+f2(Mresist)+'−'+f2(Mo)+')/'+f2(Wtotal)+' = '+f3(xbar)+' m\n';
+  p+='  偏心距 e = B/2−x̄ = '+f2(B/2)+'−'+f3(xbar)+' = '+f3(e)+' m（B/6='+f3(B6)+' m）\n';
+  if (withinMiddleThird) {
+    p+='  |e| ≤ B/6，合力在中央三分之一內，梯形分布：\n';
+    p+='  qmax = ΣW/B×(1+6e/B) = '+f2(Wtotal)+'/'+B+'×(1+6×'+f3(e)+'/'+B+') = '+f1(qmax)+' kPa\n';
+    p+='  qmin = ΣW/B×(1−6e/B) = '+f1(qmin)+' kPa\n';
+  } else {
+    p+='  |e| > B/6，合力超出中央三分之一，三角形分布（部分基底不受壓）：\n';
+    p+='  qmax = 2ΣW/(3×(B/2−e)) = '+f1(qmax)+' kPa，qmin = 0\n';
+  }
+  p+='  qmax = '+f1(qmax)+' kPa vs qa = '+qa+' kPa → '+(bearingOK?'OK ✓':'NG ✗')+'\n\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  p+='  參考：Rankine (1857) 主動土壓理論；一般擋土結構設計規範（FS要求：傾覆≥2.0，滑動≥1.5）\n';
+  p+='  未檢討：牆身與基礎版本身結構設計（撓曲/剪力）、地震力（擬靜力法）、被動土壓、地下水位影響\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+  document.getElementById('rw-proc-text').textContent=p;
+  document.getElementById('rw-proc').style.display='';
+  if(window.innerWidth<768){var b=document.getElementById('mobTab-rw-r');if(b)switchMobTab('rw-r',b);}
+}
+</script>
+<script>
+window.jrhDocMeta={
+ "doc": "擋土牆設計計算書",
+ "codes": [
+  "Rankine (1857) 主動土壓理論",
+  "建築物基礎構造設計規範（擋土結構相關規定）"
+ ],
+ "notes": [
+  "本計算採 Rankine 理論（水平背填、忽略壁摩擦），適用初步設計；實際設計如背填傾斜、有壁摩擦角，應改用 Coulomb 理論並檢討臨界滑動面。",
+  "滑動檢核保守未計入牆趾前方被動土壓抵抗，如需納入應由大地工程師評估被動土壓發揮之可靠度。",
+  "本工具僅檢核整體穩定性（傾覆/滑動/承載力），牆身與基礎版本身之結構設計（撓曲、剪力配筋）應另行計算。",
+  "地震力（擬靜力法，Mononobe-Okabe）未納入本工具，位於地震帶之擋土牆應另行檢討。",
+  "本計算書應經大地及結構工程技師簽證後，始得作為正式送審文件。"
+ ]
+};
+</script>
+</body>
+</html>
