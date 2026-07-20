@@ -264,7 +264,7 @@ function calcRW(){
   }
   var bearingOK = qmax <= qa;
 
-  document.getElementById('rw-diagram').innerHTML = buildRWDiagram(Hs,ts,tf,B,Bt,H,Ph,heelW,xbar,e,B6,bearingOK);
+  if(window.JRH && JRH.diagram) document.getElementById('rw-diagram').innerHTML = buildRWDiagram(Hs,ts,tf,B,Bt,H,Ph,heelW,xbar,e,B6,bearingOK);
 
   var res = document.getElementById('rw-result');
   res.innerHTML =
