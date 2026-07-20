@@ -144,6 +144,7 @@
   </div>
   <div class="card" data-tab="rw-r">
     <h2>穩定性檢核結果</h2>
+    <div id="rw-diagram"></div>
     <div id="rw-result"><p style="color:#888">尚未計算</p></div>
     <details class="proc" id="rw-proc" style="display:none">
       <summary>📋 計算過程（供第三方檢核）</summary>
@@ -168,6 +169,53 @@ function f1(x){return x.toFixed(1);}
 function f2(x){return x.toFixed(2);}
 function f3(x){return x.toFixed(3);}
 function deg2rad(d){return d*Math.PI/180;}
+
+/* 擋土牆斷面示意圖：等比例尺畫出牆身/基礎/背填土，土壓力用三角分布圖示搭配
+   Ph 合力箭頭表示（作用於 H/3 處），基礎底部標示合力落點 x̄ 與中央三分之一
+   安全區（金色帶），落點顏色依承載力檢核 OK/NG 而變。 */
+function buildRWDiagram(Hs,ts,tf,B,Bt,H,Ph,heelW,xbar,e,B6,bearingOK){
+  var W=460,Hpx=300;
+  var leftX=70,rightPad=70,topPad=30,bottomPad=46;
+  var drawW=W-leftX-rightPad, drawH=Hpx-topPad-bottomPad;
+  var scale=Math.min(drawW/B, drawH/H);
+  var baseY=Hpx-bottomPad;
+
+  var ftTopElev=tf/1000;
+  var ftTopY=baseY-ftTopElev*scale;
+  var ftX=leftX, ftW=B*scale;
+
+  var stemX=leftX+Bt*scale;
+  var stemW=(ts/1000)*scale;
+  var stemTopY=baseY-(ftTopElev+Hs)*scale;
+
+  var heelX=stemX+stemW;
+  var heelWpx=heelW*scale;
+
+  var triApexX=heelX+heelWpx+16, triW=32;
+  var phY=baseY-(H/3)*scale;
+
+  var xbarX=leftX+xbar*scale;
+  var midX1=leftX+(B/2-B6)*scale, midX2=leftX+(B/2+B6)*scale;
+  var mColor=bearingOK?'#1a7d3a':'#c0392b';
+
+  var D=JRH.diagram, s='';
+  s+=D.label(14,16,'擋土牆斷面示意圖（比例尺概略）',{anchor:'start',size:9,color:'#8a8370'});
+  s+='<line x1="'+(leftX-14)+'" y1="'+ftTopY+'" x2="'+stemX+'" y2="'+ftTopY+'" stroke="#8a7a5c" stroke-width="1.2"/>';
+  s+='<rect x="'+heelX+'" y="'+stemTopY+'" width="'+heelWpx+'" height="'+(ftTopY-stemTopY)+'" fill="url(#jrhSoil)" stroke="#8a7a5c" stroke-width="1"/>';
+  s+='<rect x="'+ftX+'" y="'+ftTopY+'" width="'+ftW+'" height="'+(baseY-ftTopY)+'" fill="url(#jrhConcrete)" stroke="#0b1f3a" stroke-width="1.3"/>';
+  s+='<rect x="'+stemX+'" y="'+stemTopY+'" width="'+stemW+'" height="'+(ftTopY-stemTopY)+'" fill="url(#jrhConcrete)" stroke="#0b1f3a" stroke-width="1.3"/>';
+  s+='<polygon points="'+triApexX+','+stemTopY+' '+triApexX+','+baseY+' '+(triApexX+triW)+','+baseY+'" fill="url(#jrhSoil)" stroke="#c0392b" stroke-width="1"/>';
+  s+=D.arrow(triApexX+triW/3, phY, heelX, phY, {color:'#c0392b',width:1.8});
+  s+=D.label(triApexX+triW+6, phY-4, 'Ph='+Ph.toFixed(1)+' kN/m', {anchor:'start',size:9,color:'#c0392b',weight:'700'});
+  s+=D.label(triApexX+2, stemTopY-6, '土壓分布', {anchor:'start',size:8,color:'#8a7a5c'});
+  s+=D.dim(leftX-24, stemTopY, leftX-24, baseY, 'H='+H.toFixed(2)+'m', {color:'#5c5442'});
+  s+=D.dim(ftX, baseY+16, ftX+ftW, baseY+16, 'B='+B.toFixed(2)+'m', {color:'#5c5442'});
+  s+='<rect x="'+midX1+'" y="'+(baseY-3)+'" width="'+(midX2-midX1)+'" height="6" fill="#c9a14a" opacity="0.35"/>';
+  s+='<line x1="'+xbarX+'" y1="'+(baseY-16)+'" x2="'+xbarX+'" y2="'+(baseY-6)+'" stroke="'+mColor+'" stroke-width="1.6"/>';
+  s+='<polygon points="'+(xbarX-4)+','+(baseY-6)+' '+(xbarX+4)+','+(baseY-6)+' '+xbarX+','+baseY+'" fill="'+mColor+'"/>';
+  s+=D.label(xbarX, baseY-20, 'x̄（e='+e.toFixed(3)+'m）', {size:8.5,color:mColor,weight:'700'});
+  return D.wrap(W,Hpx,s,{maxWidth:440});
+}
 
 function calcRW(){
   var Hs=v('rw-Hs'), ts=v('rw-ts'), tf=v('rw-tf'), B=v('rw-B'), Bt=v('rw-Bt');
@@ -215,6 +263,8 @@ function calcRW(){
     qmin = 0;
   }
   var bearingOK = qmax <= qa;
+
+  document.getElementById('rw-diagram').innerHTML = buildRWDiagram(Hs,ts,tf,B,Bt,H,Ph,heelW,xbar,e,B6,bearingOK);
 
   var res = document.getElementById('rw-result');
   res.innerHTML =
